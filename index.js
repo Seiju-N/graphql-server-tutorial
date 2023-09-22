@@ -1,10 +1,9 @@
 const { ApolloServer, gql } = require('apollo-server')
 const axios = require('axios')
 
-const users = [
-	{ id: '1', name: 'John Doe', email: 'john@test.com' },
-	{ id: '2', name: 'Jane Doe', email: 'jane@example.com' }
-]
+const { PrismaClient } = require('@prisma/client')
+
+const prisma = new PrismaClient()
 
 const typeDefs = gql`
 	type User {
@@ -13,17 +12,39 @@ const typeDefs = gql`
 		email: String!
 		myPosts: [Post]
 	}
+
 	type Post {
 		id: ID!
 		title: String!
 		body: String!
 		userId: ID!
 	}
+
+	type Item {
+		id: ID!
+		name: String!
+		buyFor: [ItemPrice!]!
+	}
+
+	type ItemPrice {
+		vendor: Vendor!
+		price: Int
+		currency: String
+		currencyItem: Item
+		priceRUB: Int
+	}
+
+	interface Vendor {
+		name: String!
+		normalizedName: String!
+	}
+
 	type Query {
 		hello(name: String!): String
 		users: [User]
 		user(id: ID!): User
 		posts: [Post]
+		items: [Item]
 	}
 `
 
@@ -31,8 +52,7 @@ const resolvers = {
 	Query: {
 		hello: (parent, args) => `Hello world! ${args.name}`,
 		users: async () => {
-			const res = await axios.get('https://jsonplaceholder.typicode.com/users')
-			return res.data
+			return prisma.user.findMany()
 		},
 		user: async (parent, args) => {
 			let response = await axios.get(`https://jsonplaceholder.typicode.com/users/${args.id}`)
@@ -41,6 +61,32 @@ const resolvers = {
 		posts: async () => {
 			const res = await axios.get('https://jsonplaceholder.typicode.com/posts')
 			return res.data
+		},
+		items: async () => {
+			const endpoint = 'https://api.tarkov.dev/'
+			const response = await axios.post(endpoint, {
+				query: `
+				  {
+					items {
+					  name
+					  buyFor {
+						price
+						vendor {
+						  name
+						}
+						currency
+						priceRUB
+					  }
+					}
+				  }
+				`
+			})
+
+			if (response.data.errors) {
+				throw new Error('GraphQL query failed.')
+			}
+
+			return response.data.data.items
 		}
 	},
 	User: {

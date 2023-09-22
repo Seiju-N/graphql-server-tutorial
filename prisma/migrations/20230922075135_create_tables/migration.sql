@@ -1,0 +1,23 @@
+-- CreateTable
+CREATE TABLE "Item" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "BuyFor" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "price" REAL NOT NULL,
+    "vendorId" INTEGER NOT NULL,
+    "currency" TEXT NOT NULL,
+    "priceRUB" REAL NOT NULL,
+    "itemId" INTEGER NOT NULL,
+    CONSTRAINT "BuyFor_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "Vendor" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "BuyFor_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES "Item" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Vendor" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL
+);
