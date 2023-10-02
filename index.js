@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config()
 const { ApolloServer, gql } = require('apollo-server')
 const axios = require('axios')
 
@@ -75,7 +75,6 @@ async function fetchDataFromExternalSource() {
 				  name
 				  normalizedName
 				}
-				currency
 				priceRUB
 			  }
 			  sellFor {
@@ -84,7 +83,6 @@ async function fetchDataFromExternalSource() {
 				  name
 				  normalizedName
 				}
-				currency
 				priceRUB
 			  }
 			}
