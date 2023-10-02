@@ -1,10 +1,11 @@
+require('dotenv').config();
 const { ApolloServer, gql } = require('apollo-server')
 const axios = require('axios')
 
 const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
-const batchSize = 40
+const batchSize = 10
 
 const typeDefs = gql`
 	type Item {
@@ -68,19 +69,6 @@ async function fetchDataFromExternalSource() {
 			  name
 			  normalizedName
 			  shortName
-			  description
-			  basePrice
-			  updated
-			  width
-			  height
-			  backgroundColor
-			  iconLink
-			  gridImageLink
-			  baseImageLink
-			  inspectImageLink
-			  image512pxLink
-			  image8xLink
-			  wikiLink
 			  buyFor {
 				price
 				vendor {

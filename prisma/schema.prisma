@@ -15,19 +15,7 @@ model Item {
   name             String
   normalizedName   String
   shortName        String?
-  description      String?
-  basePrice        Int
   updated          String
-  width            Int
-  height           Int
-  backgroundColor  String
-  iconLink         String
-  gridImageLink    String
-  baseImageLink    String
-  inspectImageLink String
-  image512pxLink   String
-  image8xLink      String
-  wikiLink         String
   buyFor           BuyFor[]
   sellFor          SellFor[]
 }
@@ -37,7 +25,6 @@ model BuyFor {
   price    Int
   vendorId Int
   vendor   Vendor @relation(fields: [vendorId], references: [id])
-  currency String
   priceRUB Int
   itemId   String
   item     Item   @relation(fields: [itemId], references: [id])
@@ -48,7 +35,6 @@ model SellFor {
   price    Int
   vendorId Int
   vendor   Vendor @relation(fields: [vendorId], references: [id])
-  currency String
   priceRUB Int
   itemId   String
   item     Item   @relation(fields: [itemId], references: [id])
