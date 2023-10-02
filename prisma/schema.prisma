@@ -10,40 +10,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
-}
-
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  body   String?
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
-}
-
 model Item {
-  id       Int      @id @default(autoincrement())
-  name     String
-  buyFor   BuyFor[]
+  id               String    @id @default(cuid())
+  name             String
+  normalizedName   String
+  shortName        String?
+  description      String?
+  basePrice        Int
+  updated          String
+  width            Int
+  height           Int
+  backgroundColor  String
+  iconLink         String
+  gridImageLink    String
+  baseImageLink    String
+  inspectImageLink String
+  image512pxLink   String
+  image8xLink      String
+  wikiLink         String
+  buyFor           BuyFor[]
+  sellFor          SellFor[]
 }
 
 model BuyFor {
-  id       Int      @id @default(autoincrement())
-  price    Float
+  id       Int    @id @default(autoincrement())
+  price    Int
   vendorId Int
-  vendor   Vendor   @relation(fields: [vendorId], references: [id])
+  vendor   Vendor @relation(fields: [vendorId], references: [id])
   currency String
-  priceRUB Float
-  itemId   Int      
-  item     Item     @relation(fields: [itemId], references: [id])
+  priceRUB Int
+  itemId   String
+  item     Item   @relation(fields: [itemId], references: [id])
+}
+
+model SellFor {
+  id       Int    @id @default(autoincrement())
+  price    Int
+  vendorId Int
+  vendor   Vendor @relation(fields: [vendorId], references: [id])
+  currency String
+  priceRUB Int
+  itemId   String
+  item     Item   @relation(fields: [itemId], references: [id])
 }
 
 model Vendor {
-  id       Int      @id @default(autoincrement())
-  name     String
-  buyFor   BuyFor[]
+  id             Int       @id @default(autoincrement())
+  name           String    @unique
+  normalizedName String
+  BuyFor         BuyFor[]
+  SellFor        SellFor[]
 }
